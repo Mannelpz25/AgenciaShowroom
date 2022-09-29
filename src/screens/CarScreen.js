@@ -134,7 +134,7 @@ const CarScreen = ({navigation, route}) => {
         placeholderTextColor="#808080"
         onChangeText={text => handleChange("año", text)}
         value={car.año}
-        keyboardType="numeric"
+        keyboardType="phone-pad"
         maxLength={4}
         returnKeyType={"next"}
       />
