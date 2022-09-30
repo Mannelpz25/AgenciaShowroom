@@ -15,7 +15,7 @@ import {
 import CarScreen from "./src/screens/CarScreen";
 import HomeScreen from "./src/screens/HomeScreen";
 import FotosScreen from "./src/screens/FotosScreen";
-import {CarProvider} from "./src/hooks/CarContext";
+import {CarsProvider} from "./src/hooks/CarsContext";
 
 //-Contenido:
 const Stack = createNativeStackNavigator();
@@ -26,7 +26,7 @@ export default function App() {
   };
 
   return (
-    <CarProvider>
+    <CarsProvider>
       <NavigationContainer>
         <Stack.Navigator>
           <Stack.Screen
@@ -100,7 +100,7 @@ export default function App() {
         </Stack.Navigator>
         <StatusBar barStyle={"ligth-content"} backgroundColor={"#041C32"} />
       </NavigationContainer>
-    </CarProvider>
+    </CarsProvider>
   );
 }
 

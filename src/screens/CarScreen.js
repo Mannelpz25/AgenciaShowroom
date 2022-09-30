@@ -7,21 +7,18 @@ import {
   StyleSheet,
   TextInput,
   TouchableOpacity,
-  View,
-  Alert,
 } from "react-native";
 import React, {useContext, useEffect, useState} from "react";
 import Layout from "../components/Layout";
-import {CarContext} from "../hooks/CarContext";
+import {CarsContext} from "../hooks/CarsContext";
 import {storeData} from "../storage/AsyncStorage";
 
 //-Contenido:
 const CarScreen = ({navigation, route}) => {
   // constante para deshabilitar el botón Guardar
   const [disabled, setDisabled] = useState(true);
-
   //Context de la lista de vehículos
-  const [cars, setCars] = useContext(CarContext);
+  const [cars, setCars] = useContext(CarsContext);
 
   //Estado para el llenado de vehículo del formulario
   const [car, setCar] = React.useState({
@@ -32,13 +29,17 @@ const CarScreen = ({navigation, route}) => {
     año: "",
     color: "",
     placas: "",
+    fotos: [],
   });
 
   //Efecto para cambiar el título de la navegación si es una edición de vehículo
   useEffect(() => {
     if (route.params && route.params.car) {
       navigation.setOptions({headerTitle: "Editar vehículo"});
+      setCars({...cars, active: route.params.car});
       setCar(route.params.car);
+    } else {
+      setCars({...cars, active: car});
     }
   }, []);
 
@@ -46,7 +47,7 @@ const CarScreen = ({navigation, route}) => {
   useEffect(() => {
     if (
       car.marca.length > 1 &&
-      car.modelo.length > 1 &&
+      car.modelo.length > 0 &&
       car.serie.length === 16 &&
       car.año.length == 4
     ) {
@@ -64,29 +65,35 @@ const CarScreen = ({navigation, route}) => {
   //HandleSubmit
   const handleSubmit = async () => {
     if (route.params && route.params.car) {
-      const listCars = cars.map(carItem => {
+      const listCars = cars.cars.map(carItem => {
         if (carItem.id === car.id) {
+          car.fotos = cars.active.fotos;
           return car;
         }
         return carItem;
       });
-      setCars(listCars);
+      setCars({...cars, cars: listCars});
       storeData(listCars);
     } else {
       newId =
         car.marca.substring(0, 2).toUpperCase() +
-        car.modelo.substring(0, 2).toUpperCase() +
+        car.modelo.substring(0, 1).toUpperCase() +
         car.año +
+        Math.floor(Math.random() * 10) +
+        Math.floor(Math.random() * 10) +
         Math.floor(Math.random() * 10) +
         Math.floor(Math.random() * 10);
 
-      if (cars) {
-        const listCars = [...cars, {...car, id: newId}];
-        setCars(listCars);
+      if (cars.cars) {
+        const listCars = [
+          ...cars.cars,
+          {...car, id: newId, fotos: cars.active.fotos},
+        ];
+        setCars({...cars, cars: listCars});
         await storeData(listCars);
       } else {
-        const listCars = [{...car, id: newId}];
-        setCars(listCars);
+        const listCars = [{...car, id: newId, fotos: cars.active.fotos}];
+        setCars({...cars, cars: listCars});
         await storeData(listCars);
       }
     }
@@ -95,8 +102,8 @@ const CarScreen = ({navigation, route}) => {
 
   //HandleDelete
   const handleDelete = async () => {
-    const listCars = cars.filter(carItem => carItem.id !== car.id);
-    setCars(listCars);
+    const listCars = cars.cars.filter(carItem => carItem.id !== car.id);
+    setCars({...cars, cars: listCars});
     await storeData(listCars);
     navigation.navigate("HomeScreen");
   };

@@ -19,8 +19,7 @@ const storeData = async cars => {
 const getData = async () => {
   try {
     const jsonValue = await AsyncStorage.getItem("@Cars");
-    console.log(jsonValue);
-    return jsonValue != null ? JSON.parse(jsonValue) : null;
+    return jsonValue != null && jsonValue != [] ? JSON.parse(jsonValue) : null;
   } catch (e) {
     // error reading value
   }

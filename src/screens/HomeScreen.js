@@ -2,28 +2,36 @@
  *    Pantalla Home
  */
 //-Importaciones:
-import {StyleSheet} from "react-native";
+import {StyleSheet, Text, View} from "react-native";
 import React, {useContext, useEffect} from "react";
 import Layout from "../components/Layout";
 import CarList from "../components/CarList";
-import {CarContext} from "../hooks/CarContext";
+import {CarsContext} from "../hooks/CarsContext";
 import {clearStorage, getData} from "../storage/AsyncStorage";
 
 //-Contenido:
 const HomeScreen = () => {
-  const [cars, setCars] = useContext(CarContext);
+  const [cars, setCars] = useContext(CarsContext);
 
   const getCars = async () => {
-    await setCars(await getData());
+    await setCars({...cars, cars: await getData()});
   };
 
   useEffect(() => {
     getCars();
+    setCars({...cars, active: null});
   }, []);
 
   return (
     <Layout>
-      <CarList cars={cars} />
+      {cars.cars && Object.values(cars.cars).length > 0 ? (
+        <CarList cars={cars.cars} />
+      ) : (
+        <View style={styles.centeredView}>
+          <Text style={styles.textH2}>Sin vehículos</Text>
+          <Text style={styles.textP}>Agrega un nuevo vehículo</Text>
+        </View>
+      )}
     </Layout>
   );
 };
@@ -32,22 +40,21 @@ export default HomeScreen;
 
 //-Estilos:
 const styles = StyleSheet.create({
-  cancelButton: {
-    color: "#DDDDDD",
-    borderRadius: 15,
-    paddingVertical: 2,
-    paddingHorizontal: 10,
-    backgroundColor: "#F05454",
-    fontSize: 16,
-    padding: 2,
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
   },
-  saveButton: {
-    color: "#041C32",
-    borderRadius: 15,
-    paddingVertical: 2,
-    paddingHorizontal: 10,
-    backgroundColor: "#ECB365",
-    fontSize: 16,
+  textH2: {
+    color: "#FFFFFF",
     fontWeight: "bold",
+    textAlign: "center",
+    fontSize: 20,
+  },
+  textP: {
+    color: "#c7c7c7",
+    fontWeight: "normal",
+    textAlign: "center",
+    fontSize: 14,
   },
 });
