@@ -12,6 +12,8 @@ import React, {useContext, useEffect, useState} from "react";
 import Layout from "../components/Layout";
 import {CarsContext} from "../hooks/CarsContext";
 import {storeData} from "../storage/AsyncStorage";
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 //-Contenido:
 const CarScreen = ({navigation, route}) => {
@@ -19,6 +21,10 @@ const CarScreen = ({navigation, route}) => {
   const [disabled, setDisabled] = useState(true);
   //Context de la lista de vehículos
   const [cars, setCars] = useContext(CarsContext);
+
+  const [show, setShow] = useState(false);
+
+  const [selectedDate, setSelectedDate] = useState('');
 
   //Estado para el llenado de vehículo del formulario
   const [car, setCar] = React.useState({
@@ -110,76 +116,29 @@ const CarScreen = ({navigation, route}) => {
 
   return (
     <Layout>
-      <TextInput
-        style={styles.input}
-        placeholder="Marca*"
-        placeholderTextColor="#808080"
-        onChangeText={text => handleChange("marca", text)}
-        value={car.marca}
-        returnKeyType={"next"}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Modelo*"
-        placeholderTextColor="#808080"
-        onChangeText={text => handleChange("modelo", text)}
-        value={car.modelo}
-        returnKeyType={"next"}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Serie*"
-        placeholderTextColor="#808080"
-        onChangeText={text => handleChange("serie", text)}
-        value={car.serie.toLocaleUpperCase()}
-        maxLength={16}
-        returnKeyType={"next"}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Año*"
-        placeholderTextColor="#808080"
-        onChangeText={text => handleChange("año", text)}
-        value={car.año}
-        keyboardType="phone-pad"
-        maxLength={4}
-        returnKeyType={"next"}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Color"
-        placeholderTextColor="#808080"
-        onChangeText={text => handleChange("color", text)}
-        value={car.color}
-        returnKeyType={"next"}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Placas"
-        placeholderTextColor="#808080"
-        onChangeText={text => handleChange("placas", text)}
-        value={car.placas}
-        returnKeyType={"done"}
-      />
-      <TouchableOpacity
-        style={[styles.saveButton, disabled && styles.saveButtonDisable]}
-        disabled={disabled}
-        onPress={handleSubmit}
-      >
-        <Text style={styles.textButton}>Guardar</Text>
-      </TouchableOpacity>
-      {route.params && (
-        <TouchableOpacity style={styles.deleteButton} onPress={handleDelete}>
-          <Text style={styles.textButton}>Eliminar</Text>
-        </TouchableOpacity>
-      )}
+      
 
       <TouchableOpacity
         style={styles.cancelButton}
-        onPress={() => navigation.navigate("HomeScreen")}
+        onPress={() => setShow(true)}
       >
         <Text style={styles.textButton}>Cancelar</Text>
       </TouchableOpacity>
+      {show && (
+       <DateTimePicker
+        value={new Date()}
+        display="spinner"
+        themeVariant="light"
+        mode="time"
+        positiveButton={{label: 'Aceptar', textColor: 'green'}}
+        negativeButton={{label: 'Cancelar', textColor: 'red'}}
+        is24Hour={false}
+        style={{flex: 1,  paddingTop: 10,
+          width: 350, borderRadius: 100,}}
+        onChange={()=>{}}
+       />
+       )}
+
     </Layout>
   );
 };

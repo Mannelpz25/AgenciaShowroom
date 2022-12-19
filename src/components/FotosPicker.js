@@ -32,6 +32,7 @@ const FotosPicker = () => {
     launchImageLibrary(options, setResponse);
     setModalVisible(false);
   }, []);
+  
 
   useEffect(() => {
     if (response && response.assets) {
